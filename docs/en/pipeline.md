@@ -44,8 +44,8 @@ The scene stage moves most:
 it includes drawing the 7000×4500 px page and uploading it,
 and it follows the shot and the load on the machine.
 
-Rendering and encoding together ran at about 16 frames per second:
-the full sixteen-second film, 966 frames, took 59 seconds
+Rendering and encoding together ran at 16 to 20 frames per second:
+the full sixteen-second film, 966 frames, took 59 and 47 seconds in two runs
 and came out at 86 MB (45 Mbit/s).
 
 ## Lessons that cost time

@@ -113,7 +113,7 @@ Check rhythm, continuity of numbers, and the alternation of steep and calm angle
 ### 7. Render and verify
 
 ```bash
-bun run render --film=<film>                             # 4K60, about 16 frames/s on a mid-range GPU
+bun run render --film=<film>                             # 4K60, 16–20 frames/s on a mid-range GPU
 bun run verify out/<film>-2160p60.mp4 --at=1,5,9         # decodes frames from the file
 ```
 

@@ -34,7 +34,7 @@ These are its edges.
   in at most 0.0015% of the pixels in our runs.
   Other GPUs may differ more, in the last bits of shader arithmetic.
 - **Encoding speed.**
-  On an RTX 3060 Ti the 4K60 master renders and encodes at about 16 frames a second,
+  On an RTX 3060 Ti the 4K60 master renders and encodes at 16 to 20 frames a second,
   so the sixteen-second film takes about a minute.
 - **mp4-muxer is deprecated.**
   Its author now maintains Mediabunny.
