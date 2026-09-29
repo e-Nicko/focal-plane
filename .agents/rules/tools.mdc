@@ -1,0 +1,41 @@
+---
+description: The tools — Bun scripts, the Chrome client, the development server, uploads, process hygiene, error messages.
+globs: "tools/**/*.ts"
+alwaysApply: false
+---
+
+# Tools
+
+## Design
+
+- A tool is one Bun script with its usage in the header comment.
+  Options are `--name=value` after the script name, and `--film=<name>` wherever a film is involved.
+- Chrome is driven by our own client, `tools/cdp.ts`, over the DevTools protocol.
+  Playwright hangs under Bun on Windows (checked with Bun 1.3.13).
+  Do not bring Playwright or Puppeteer back without testing it there again.
+- A dependency needs a reason of more than 50 lines.
+  `gifenc` has one; Playwright did not.
+- A binary result travels from the page to the tool as a `fetch` PUT to the tool's own server,
+  with a token that changes on every run.
+  It never travels as base64 through the protocol.
+
+## Safety
+
+- The server binds to 127.0.0.1.
+  It serves the repository without dotfiles and without `node_modules/`,
+  `/vendor/` from the two packages, and nothing outside the root.
+  Uploads are on only for the tools, and only with the token.
+- The tools start their own Chrome with a temporary profile and stop exactly that process,
+  then remove the profile, with retries on Windows.
+  Never kill Chrome or Bun by name.
+- `CHROME_FLAGS` adds switches for an experiment.
+  The defaults in `CHROME_ARGS` are part of the pixel contract — [determinism](determinism.mdc).
+
+## Behaviour
+
+- A mistake that a user can make — an unknown film, no Chrome, a missing file —
+  ends in one line that starts with `error:` and in exit code 1.
+  `DEBUG=1` prints the stack.
+- The defaults of a tool are documented in its header comment and in `references/shot-api.md`.
+  A new option is documented in both.
+- A tool prints what it wrote, with the path and the size, so a report can quote it.

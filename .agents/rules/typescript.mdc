@@ -1,0 +1,27 @@
+---
+description: TypeScript in src/ and tools/ — strict, erasable syntax only, .js import specifiers, types at the edges.
+globs: "src/**/*.ts,tools/**/*.ts"
+alwaysApply: false
+---
+
+# TypeScript
+
+- `bun run typecheck` (tsc with `strict`) is clean before any other check.
+  Loosening a flag in `tsconfig.json` needs a reason in the commit message.
+- Erasable syntax only (`erasableSyntaxOnly`): no `enum`, no `namespace`, no parameter properties.
+  The browser gets the sources with the types stripped by Bun,
+  by the development server and by `bun run build`,
+  and any tool that strips types must be able to run them.
+- Import specifiers end in `.js` — `'./math.js'` — in `src/` and in `tools/`.
+  The browser asks for those URLs, and the server answers from the `.ts` file.
+  A type-only import uses `import type` or an inline `type` (`verbatimModuleSyntax`).
+- No `any`.
+  The exceptions sit at a boundary with untyped data, such as the DevTools protocol in `tools/cdp.ts`,
+  and carry a comment.
+  Prefer `unknown` and a narrowing check.
+- Types state the contract.
+  A shot is `satisfies Shot<TheirState>`, its state extends `ShotState`, its camera is `CameraKeys`.
+- No `!` on a value that can really be missing.
+  Throw a clear error at the source instead, as `page.ts` does when Canvas 2D is unavailable.
+- Match the surrounding code: its names, its comment density, its idiom.
+  Comments say why, one sentence per line — [line-breaks](line-breaks.mdc).

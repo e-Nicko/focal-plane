@@ -1,0 +1,45 @@
+---
+description: Look before you claim — the checks that are different facts, before-and-after frame comparison, what a report says, testing the skill on a stranger. Applies always.
+globs: "**/*"
+alwaysApply: true
+---
+
+# Verification
+
+"The types pass", "the still looks right", "the render finished"
+and "the MP4 decodes and looks right" are four facts.
+A report names which of them were checked, how, and which were not.
+
+## The loop
+
+1. `bun run typecheck`.
+2. `bun run shoot` at 1280×720, then open every image.
+   An image that was not looked at is a guess, and the code cannot stand in for it.
+3. One contact sheet of the whole edit (`--sheet`):
+   rhythm, numbers across cuts, alternation of angles.
+4. Then `bun run render` and `bun run verify`.
+   The frames decoded from the file are looked at,
+   and resolution, duration and bitrate are quoted from the tool's output.
+
+## Before and after
+
+- A change to the kit, the engine, the data, the fonts or the Chrome switches can move pixels everywhere.
+  Shoot the same times before and after with the same size and quality, as PNG,
+  and compare them pixel by pixel.
+- Expected: identical, or one level in a handful of pixels — the noise between two runs of one command.
+  Anything else is explained in the commit message:
+  which shot, which pixels, why.
+- Keep the "before" frames in `out/`, which git ignores.
+
+## Numbers
+
+- Timings come from `bun run timings` and are quoted as ranges over several runs, with the hardware named.
+  One run is not a measurement: the scene stage moved between 13 and 57 ms.
+- A claim in the docs is measured, cited or labelled as craft — [documentation](documentation.mdc).
+- Say what was not tested: another operating system, another GPU, a phone screen.
+
+## The skill
+
+- After a significant change to the skill, or to the API it teaches,
+  give it to a fresh agent with a new brief and read the report.
+  That is how the odometer bug and ten gaps in the skill were found — [skill](skill.mdc).

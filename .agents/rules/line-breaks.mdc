@@ -1,0 +1,80 @@
+---
+description: Semantic Line Breaks — a sentence per line in docs, rules, pull request text and comments; the Chinese variant.
+globs: "**/*.md,**/*.mdc,**/*.ts,**/*.yml"
+alwaysApply: false
+---
+
+# Semantic Line Breaks
+
+Text is wrapped at the boundaries of meaning:
+each sentence on its own line, and a long sentence split into its parts.
+The technique is described at [sembr.org](https://sembr.org).
+
+A diff then shows the changed sentence whole,
+a review comment sticks to one thought,
+and editing a phrase does not reflow a paragraph.
+
+## Where to break
+
+- Always after a full stop, a question mark and an exclamation mark.
+- Where possible inside a long sentence, at the boundary of a part:
+  after a colon or a semicolon,
+  after a dash between parts,
+  after a comma before a new clause or a new group of a list,
+  before a parenthesis, and before a link.
+- Never inside a phrase.
+  A preposition or a conjunction moves to the next line with its word.
+
+## Width
+
+- About 100 characters is the target.
+  A line may run longer to keep a phrase, a link or code whole.
+- A line well over 120 characters is a reason to break at the nearest boundary or to shorten the sentence.
+
+## Example
+
+Before — wrapped by width, sentences cut in the middle:
+
+```markdown
+The tools start their own Chrome with a temporary profile and stop only that process. Never kill
+Chrome by name: other instances may belong to the user, and a killed window loses their work.
+```
+
+After — wrapped by meaning:
+
+```markdown
+The tools start their own Chrome with a temporary profile and stop only that process.
+Never kill Chrome by name:
+other instances may belong to the user, and a killed window loses their work.
+```
+
+## Markdown
+
+- The breaks are soft: the browser joins the lines of a paragraph.
+- No trailing spaces: two of them make a visible line break.
+- A continuation line is indented to the text of its item,
+  two spaces after `- ` and three after `1. `.
+  It does not start with `- `, `* `, `+ `, a number and a dot, `#`, `>` or `|`:
+  Markdown would take it for a new list, heading, quotation or table.
+- Table rows, headings, frontmatter, URLs and code blocks are not wrapped.
+- A pull request description is Markdown, and the same rules apply.
+
+## Russian and Chinese
+
+- Russian follows the English rules.
+- Chinese: a soft break turns into a space in the browser.
+  Break only after full-width punctuation — 。，；：！？ — and never between two characters.
+  One sentence per line.
+
+## Comments in code
+
+- The same habit: a sentence per line, and a long one split at a boundary.
+- A comment at the end of a code line is one short phrase.
+  A longer explanation is a block above the line.
+- No trailing spaces.
+
+## Check
+
+`bun run check:docs` flags a line with two sentences, trailing spaces in Markdown,
+and a Chinese break that a browser would show as a space.
+It does not judge where a long sentence should split.

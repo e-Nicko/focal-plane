@@ -1,5 +1,12 @@
 node_modules/
 out/
 public/
+.env
+.env.*
+# personal folders of editors and agents; the shared rules live in .agents/
+.claude/
+.cursor/
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db

@@ -1,0 +1,50 @@
+---
+description: The kit and the shots — drawing primitives, the shot contract, the grammar of a shot, camera keys, the example film.
+globs: "src/kit/**/*.ts,src/film/**/*.ts,skills/focal-plane/templates/**/*.ts"
+alwaysApply: false
+---
+
+# Kit and shots
+
+## The kit
+
+- Primitives draw into a `Ctx` at display scale: 100 page px make one world unit.
+  Every function leaves the context as it found it, with `save` and `restore` balanced.
+- The palette `M` is grey with no hue.
+  Colour is a decision for a film, not for the kit.
+- Text uses `FONT` and the shipped weights: Sans 400, 500, 600 and Mono 400, 500.
+  Plex Mono has no Greek, so `σ` comes from Sans.
+  A new symbol is checked against the font files before it is used.
+- The kit is API.
+  A change of a signature updates the templates, `references/shot-api.md` and the example film in one commit.
+
+## A shot
+
+- The shot is `{ id, duration, size, camera, state, draw } satisfies Shot<TheirState>`.
+  `state` and `draw` are pure, and `draw` is synchronous — [determinism](determinism.mdc).
+- One idea, 1.8 to 2.6 seconds.
+  Cause and effect share the frame.
+  The cuts are hard.
+- The camera is two keys in the language of composition:
+  `look`, `distance`, `azimuth`, `elevation`, `roll`, `fov`, `aperture`.
+  World coordinates are never written by hand.
+  Moving `look` down the page moves the content up in the frame.
+- Focus is a page point returned as `focus`.
+  It racks from the cause to the effect after the effect has begun.
+- The cursor travels with an ease and a slight bow, lands beside its target,
+  goes through hover, press, ripple and settle, and drifts off the effect.
+  It is drawn last, and its `scale` grows with the camera distance.
+- Nothing important is smaller than 20 px on the page.
+  Readable numbers are 150 to 270 px;
+  a 330 px number is a soft foreground mass that the frame may crop.
+- Text widths that `state()` needs are measured lazily with a private canvas.
+- The fades dim the first 0.35 s and the last 0.7 s of the film.
+  The first cursor travel and the last landing beat stay out of them.
+
+## The example film
+
+- It is the reference for this grammar, and a fictional product.
+  Its numbers agree across shots.
+- A change that alters a frame is followed by `bun run media` and a look at the cover.
+- The templates in `skills/focal-plane/templates/` are the same grammar in its smallest form.
+  A change to a template is tested as a film — [skill](skill.mdc).

@@ -4,6 +4,7 @@
 
 感谢你帮助改进 Focal Plane。
 以下几条规则让它保持一致。
+编程智能体从 [AGENTS.md](AGENTS.md) 开始；共用规则在 [.agents/rules](.agents/rules) 中。
 
 ## 代码
 
@@ -34,9 +35,9 @@
 
 ## 提交合并请求之前
 
-- [ ] `bun run typecheck` 没有报错。
+- [ ] `bun run typecheck` 和 `bun run check:docs` 都没有报错。
 - [ ] `bun run shoot --t=1,5,9,13 --sheet` 能正常渲染，并且你看过了联系表。
 - [ ] 如果改动了引擎、工具包或数据：
       除了你有意改动的部分，改动前后的静帧完全相同。
-- [ ] 如果改动了示例影片：已用 `bun run media` 重新生成封面和静帧。
+- [ ] 如果改动了示例影片：已用 `bun run media` 重新生成封面、静帧和链接卡片。
 - [ ] 你改过的页面中，链接都能正常打开。

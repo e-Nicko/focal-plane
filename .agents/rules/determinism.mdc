@@ -1,0 +1,49 @@
+---
+description: A frame is a pure function of time — what a shot, the data and the frame path may not read, how to seed, what "the same" means on a GPU. Applies always.
+globs: "src/**/*.ts,skills/focal-plane/templates/**/*.ts"
+alwaysApply: true
+---
+
+# Every frame is a function of time
+
+The player and the offline renderer run the same code and differ only in the times they ask for.
+That holds only while `state(t)`, `draw()` and the data are pure.
+
+## Not allowed in shots, in data, or in the engine's frame path
+
+- `Math.random`, `Date`, `performance.now`, the timing of `requestAnimationFrame`,
+  `crypto.getRandomValues`, network requests, `localStorage`,
+  and reads of the DOM or of the window size.
+- State carried from one frame to the next:
+  a variable that a frame writes and the next frame reads, such as a smoothed cursor or an accumulator.
+  A shot keeps no history; it computes from `t`.
+- Anything asynchronous in `draw()`.
+
+## Allowed
+
+- Seeded randomness: `mulberry32(seed)` and `gauss(rnd)` from the kit.
+  Seeds are constants in the data module.
+- Arithmetic on `t`, on constants and on the data.
+- Text measured lazily with a private canvas on first use, never at module load:
+  the fonts are not ready then.
+
+## Order does not matter
+
+- Any frame can be rendered first, last or twice.
+  The grain is seeded by the frame index, not by the clock.
+- A change that makes frame N depend on frame N−1 is a regression.
+
+## What "the same" means
+
+- On the CPU — `state`, the camera, the data — exactly the same numbers.
+- On the GPU — the same image to within one level of 8-bit colour in a handful of pixels.
+  In our runs at most 0.0015% of a frame differed between two runs of one command.
+  Bit-exact output is not the goal, and a larger difference is a change to explain.
+- The Chrome switches in `tools/cdp.ts` belong to this contract.
+  Changing them changes pixels, so compare frames before and after.
+
+## Data
+
+- One data module per film, and every number on screen derives from it.
+- Derived values — totals, deltas, forecasts, outliers — are computed there or in the shot.
+  They are never typed into a label, and a detector is never told the answer it should find.

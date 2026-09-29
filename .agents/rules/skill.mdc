@@ -1,0 +1,42 @@
+---
+description: The agent skill in skills/focal-plane — English only, kept in step with the code, templates tested as a film, tried on a stranger.
+globs: "skills/**/*"
+alwaysApply: false
+---
+
+# The skill
+
+`skills/focal-plane/` is the product for agents:
+`SKILL.md` (the workflow and the non-negotiables),
+`references/` (composition, camera and focus, the API, verification, pitfalls)
+and `templates/` (a shot, an edit, an entry point).
+It does not describe how to work on this repository — that is what `.agents/` is for.
+
+## Keep it true
+
+- The skill is in English.
+  Its frontmatter `description` carries trigger phrases in English, Russian and Chinese.
+- Every path, command and signature in it exists.
+  A change to the kit, the engine, the tools or the capture API updates `references/shot-api.md`,
+  and any other reference it touches, in the same commit.
+- The numbers in the skill — ranges of camera keys, sizes, timings — come from the example film or from a measurement.
+  When the film changes, check them.
+- Templates are tested as a film:
+  copy them to `src/<tmp>/`, run `bun run typecheck` and `bun run shoot --film=<tmp>`,
+  look at the sheet, and delete the copy.
+
+## Keep it lean
+
+- `SKILL.md` holds the workflow and the non-negotiables.
+  Detail goes to `references/`, one topic per file.
+- Every rule can be seen: in a still, in a number or in a command's output.
+  A rule that nothing can check does not go in.
+- Say what to do, and why in one sentence.
+  No history.
+
+## Try it on a stranger
+
+- After a significant change, give the skill to a fresh agent with a new brief.
+  Let it work from `SKILL.md` alone, and read its report.
+- The findings are the friction points and the wrong lines.
+  Fix the skill or the kit, and leave the test film out of the repository.

@@ -34,7 +34,8 @@
     "timings": "bun tools/timings.ts",
     "media": "bun tools/media.ts",
     "build": "bun tools/build.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:docs": "bun tools/check-docs.ts"
   },
   "dependencies": {
     "mp4-muxer": "5.2.2",

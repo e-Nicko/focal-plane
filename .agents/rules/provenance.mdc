@@ -1,0 +1,58 @@
+---
+description: Where code, fonts, media, data and claims come from — licences, credits, the reference reel, research sources. Applies always.
+globs: "**/*"
+alwaysApply: true
+---
+
+# Provenance and licences
+
+The repository is public and MIT-licensed.
+Everything in it can be redistributed under those terms,
+or is listed in `NOTICE.md` under its own licence.
+
+## Code
+
+- Code is written here, or depended on from the package registry.
+  Code from another project, an article or an answer is copied only when its licence allows it,
+  and with a credit in `NOTICE.md`.
+- A technique implemented from a paper or a post is credited the same way.
+  The PBR Neutral tone map (Khronos) and the bokeh gather (Gustafsson) are the examples.
+- Stack Overflow answers are CC BY-SA and are not pasted.
+
+## Dependencies
+
+- Allowed licences: MIT, BSD, ISC, Apache-2.0, MPL-2.0, and OFL for fonts.
+  Not allowed: GPL, AGPL, SSPL, CC BY-NC and similar, and packages without a licence.
+- Before `bun add`, check the licence and the size.
+  Runtime dependencies are pinned to an exact version and listed in `NOTICE.md`;
+  development dependencies are listed there too.
+- A dependency earns its place.
+  When 50 lines do the job, write them:
+  the DevTools client and the docs checker are examples.
+
+## Fonts and media
+
+- The fonts are IBM Plex under the SIL Open Font License, shipped complete with `fonts/OFL.txt`.
+  Nothing loads from a font CDN, and a frame never depends on the system's fonts.
+- The cover, the stills and the link card are built from the example film by `bun run media`.
+  They are not edited by hand and not replaced with outside images.
+- No frames, clips, screenshots or audio from third-party work.
+  The reference reel that set the look was measured and is not in the repository,
+  and neither are frames of it, in any commit.
+- Stock or generated media enters only with a licence that permits redistribution,
+  recorded in `NOTICE.md`.
+
+## Data and names
+
+- The company, the product and the numbers of the example film are fictional.
+  There are no real people, customers, prices or brands.
+- Synthetic data comes from seeded code, not from copied datasets.
+
+## Claims about the world
+
+- A claim about perception or about the genre cites a source in `docs/sources.md`
+  with a reliability mark:
+  🟢 the page was read, 🟡 seen in search results, ⚪ a claim of the source that we could not check.
+- A synthesised search answer is 🟡, not 🟢.
+  Mark a source 🟢 only after reading the abstract or the page itself.
+- A convention with no research behind it is labelled as craft.

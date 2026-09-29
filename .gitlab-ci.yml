@@ -13,6 +13,7 @@ typecheck:
   stage: test
   script:
     - bun run typecheck
+    - bun run check:docs
 
 pages:
   stage: deploy

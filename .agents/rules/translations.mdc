@@ -1,0 +1,51 @@
+---
+description: The Russian and Chinese pages — same change in the same commit, the glossary, what is never translated, typography, line breaks.
+globs: "docs/ru/**,docs/zh/**,docs/glossary.md,README.ru.md,README.zh.md,CONTRIBUTING.ru.md,CONTRIBUTING.zh.md"
+alwaysApply: false
+---
+
+# Translations
+
+## One change, one commit
+
+- English changes first.
+  The Russian and the Chinese page receive the same change in the same commit,
+  and a translation does not lag on purpose.
+- The structure is identical:
+  the same headings, tables, code blocks and list items, in the same order.
+  `bun run check:docs` compares their counts.
+- A new term goes into `docs/glossary.md` in all three languages before it is used.
+
+## Never translated
+
+- Code identifiers in backticks, file names, paths, commands, URLs and script names,
+  numbers inside code, shot ids, the labels that the film draws on screen,
+  and the preset names `draft`, `high` and `master`.
+- Names of researchers stay in Latin letters.
+  A citation takes the local form: «Held и др., 2010», «Held 等，2010».
+
+## Translated
+
+- Prose, headings, table cells, the alt text of images,
+  comments inside illustrative code blocks, and the node labels of diagrams, with the syntax kept.
+- The language switchers link the three versions of a page to each other:
+  `README.md`, `README.ru.md`, `README.zh.md`, and `docs/<lang>/README.md`.
+  Links between pages stay relative inside the language folder.
+- Every number, caveat and source keeps its exact meaning.
+  Where the English marks something as craft and not as research, the translation keeps the mark.
+
+## Russian
+
+- A decimal comma in prose (2,1 с; 1,8–2,6 с) and a decimal point inside code; «ёлочки» for quotes.
+- Natural word order, not a calque of the English.
+- No «не X, а Y» and no «не просто X, а Y».
+
+## Chinese
+
+- Full-width punctuation in Chinese sentences,
+  and a half-width space between Chinese characters and Latin words or numbers:
+  2.5D 动态 UI, RTX 3060 Ti 上约 20 帧每秒.
+- Punctuation stands outside bold: `**每一帧都是时间的函数**。`, and a label is `**我们的用法**：`.
+  GitHub does not close a bold span when a colon inside it is followed by a Chinese character.
+- Lines break only after full-width punctuation — [line-breaks](line-breaks.mdc).
+- No 不是……而是……, and no ……而不是…….

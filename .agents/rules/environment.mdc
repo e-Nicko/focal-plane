@@ -1,0 +1,47 @@
+---
+description: Runtime and machine — Bun, Google Chrome with a GPU, the shell on Windows, file encoding, processes. Applies always.
+globs: "**/*"
+alwaysApply: true
+---
+
+# Environment
+
+## What the project needs
+
+- Bun 1.2 or newer runs the tools, the development server and the build.
+  Node is not used, and the sources need no bundler.
+- Google Chrome with a working GPU: WebGL 2 and the WebCodecs H.264 encoder.
+  `CHROME_PATH` overrides the lookup.
+  Chromium builds often lack the H.264 encoder.
+- Nothing is fetched at run time.
+  three.js and mp4-muxer come from `node_modules/`, the fonts from `fonts/`,
+  so a render works offline.
+- The project is tested on Windows 11 with an RTX 3060 Ti and nowhere else.
+  A report about another system says what was not tested.
+
+## The shell on Windows
+
+- The shell is Git Bash.
+  Paths use forward slashes, and paths with spaces are quoted.
+- Options go after the script name, without `--` in between: `bun run shoot --t=1,5`.
+- A 4K render takes about a minute.
+  Start it in the background and wait for it; do not poll it in a loop.
+- Windows keeps files open for a moment after a process exits.
+  Deleting a temporary folder is retried, and a first failure is not an error.
+
+## Text files
+
+- UTF-8 with LF line endings; `.gitattributes` enforces `eol=lf`.
+- A script that writes Russian or Chinese text sets the encoding itself.
+  The Windows console defaults to cp1252, and Python then fails on the first Cyrillic letter.
+- Backslashes and non-ASCII text are fragile inside shell heredocs and `sed` expressions:
+  `\f` in a path becomes a form feed.
+  Make exact edits with an editor tool, or write the script to a file first.
+  After a scripted edit,
+  `grep -rlP '[\x00-\x08\x0b\x0c\x0e-\x1f]' .` finds stray control characters.
+
+## Processes
+
+- The tools start their own Chrome with a temporary profile and stop only that process.
+  Never kill Chrome or Bun by name: other instances may belong to the user.
+- A server that you start for a check is yours to stop when the check ends.

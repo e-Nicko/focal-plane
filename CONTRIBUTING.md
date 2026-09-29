@@ -4,6 +4,7 @@
 
 Thank you for improving Focal Plane.
 A few rules keep it coherent.
+Coding agents start at [AGENTS.md](AGENTS.md); the shared rules are in [.agents/rules](.agents/rules).
 
 ## Code
 
@@ -34,9 +35,9 @@ A few rules keep it coherent.
 
 ## Before a merge request
 
-- [ ] `bun run typecheck` is clean.
+- [ ] `bun run typecheck` and `bun run check:docs` are clean.
 - [ ] `bun run shoot --t=1,5,9,13 --sheet` renders, and you looked at the sheet.
 - [ ] If you changed the engine, the kit or the data:
       stills before and after are identical outside what you meant to change.
-- [ ] If you changed the example film: `bun run media` rebuilt the cover and the stills.
+- [ ] If you changed the example film: `bun run media` rebuilt the cover, the stills and the link card.
 - [ ] Links in the pages you touched resolve.

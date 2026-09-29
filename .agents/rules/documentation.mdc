@@ -1,0 +1,64 @@
+---
+description: Documentation — shape, claims and their sources, plain style, the cascade of a change, links and checks.
+globs: "**/*.md,**/*.mdc"
+alwaysApply: false
+---
+
+# Documentation
+
+## Shape
+
+- Pages are short and answer one question each.
+  A page that needs a table of contents is two pages.
+- English is canonical: `docs/en/`, `README.md`, `CONTRIBUTING.md`.
+  Russian and Chinese follow it — [translations](translations.mdc).
+- `docs/en/README.md` lists every page, and each page points to the next one or to its neighbours.
+
+## Claims
+
+- A claim about the world is measured, cited or labelled as craft.
+  A measurement names the hardware and the number of runs.
+  A citation goes to `docs/sources.md` with its reliability mark.
+  Research is stated together with its limit: "the pull depends on the viewer's task".
+- A number comes from a tool's output, never from memory.
+  A number that moves with the code, such as a timing or a file size, says what was measured.
+- When a measurement contradicts a sentence in the docs, the sentence changes.
+
+## Style
+
+- Plain declarative sentences.
+  No filler openers, no hedging that the source does not have,
+  no contrast frames of the "not X, but Y" kind, no lists of three for rhythm, no sales words.
+- The reader is a designer and a developer at once.
+  A term is defined where it first appears, and the words are those of `docs/glossary.md`.
+- Present tense, active voice, and the second person for instructions.
+
+## The cascade
+
+A change is finished when everything it touched agrees:
+
+1. the code and its types;
+2. the example film, and `bun run media` if a frame moved;
+3. the skill and its templates;
+4. `docs/en`;
+5. `docs/ru` and `docs/zh`;
+6. the three READMEs and the three CONTRIBUTING files;
+7. `NOTICE.md`, if a dependency or a credit changed;
+8. these rules, if a working agreement changed.
+
+A new agreement does not stay in a chat.
+
+## Cleaning
+
+- The old path goes in the same change:
+  dead code, commented-out blocks, an outdated paragraph, the previous name of a tool.
+  There is one truth per fact.
+
+## Links and checks
+
+- Repository files are linked relatively and outside resources by full URL.
+  The link text reads without the URL.
+  There are no links to files that do not exist yet.
+- After a file is renamed, the links to it are updated with a search over the repository.
+- `bun run check:docs` is clean before a commit.
+  It checks line breaks, trailing spaces, relative links and the structure of the translations.

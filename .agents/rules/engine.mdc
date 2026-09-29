@@ -1,0 +1,49 @@
+---
+description: The engine — page plane, thin-lens depth of field, grade, player and MP4 export; the frozen texture path, quality presets, the capture API.
+globs: "src/engine/**/*.ts"
+alwaysApply: false
+---
+
+# Engine
+
+3D does three things here and no more:
+it holds the page plane, it gives the camera something to look at, and it writes depth for the lens.
+The interface itself stays in canvas 2D, in the shots and the kit.
+
+## Decisions that cost time
+
+- The page canvas is uploaded as plain RGBA8:
+  `NoColorSpace`, `flipY = false`, `premultiplyAlpha = true`, and the sRGB decode happens in the shader.
+  An sRGB texture with `flipY` takes the CPU path in Chrome and costs seconds per 4K frame.
+  These settings in `page.ts` do not change.
+- The master has no MSAA (`QUALITY.master.msaa` is 0) and uses FXAA.
+  Multisampling a half-float target at 4K was about twenty times slower.
+- Page density is 1.5× in draft, 2.5× in high and 5× in master,
+  so type stays sharp when a 4K frame looks at a third of the page.
+- The video frame is read in the task that drew it.
+  The drawing buffer is valid only then.
+- A stage is timed with a one-pixel `readPixels` fence, never with `gl.finish()`:
+  Chrome turns `finish()` into a flush.
+  `pipe.timings` does this.
+- Every effect scales with the frame height,
+  so a 1080p preview and the 4K master frame the same picture.
+  A new effect follows this rule.
+- three.js and mp4-muxer are pinned to exact versions in `package.json`.
+  An upgrade is a commit of its own, with frames compared before and after and with timings.
+
+## Contracts that other code relies on
+
+- `window.__film` (`FilmApi` in `player.ts`) is what the tools call.
+  A change to a member changes `tools/`, the skill's `references/shot-api.md`
+  and `docs/en/pipeline.md` in the same commit.
+- `edit.stateAt(t)` is pure — [determinism](determinism.mdc).
+- `exportMP4` stays deterministic:
+  frame `i` is time `i / fps`, with no screen capture and no dropped frames.
+- The shaders live in `shaders.ts` as template strings.
+  The tone map follows the Khronos PBR Neutral reference and keeps its credit in `NOTICE.md`.
+
+## Changing the engine
+
+- Compare frames before and after — [verification](verification.mdc) —
+  and record `bun run timings` when a pass changed.
+- A new option enters `makeEdit` with a default that leaves the current look as it is.
