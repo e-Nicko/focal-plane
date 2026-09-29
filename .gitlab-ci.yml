@@ -1,0 +1,25 @@
+# Types are checked on every push.
+# The player is published as a static site from the default branch
+# (the GitHub side of the project uses .github/workflows/site.yml).
+# GitLab Pages is served over HTTPS,
+# so the in-browser MP4 render (WebCodecs) works there too.
+
+default:
+  image: oven/bun:1
+  before_script:
+    - bun install --frozen-lockfile
+
+typecheck:
+  stage: test
+  script:
+    - bun run typecheck
+
+pages:
+  stage: deploy
+  script:
+    - bun run build
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

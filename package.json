@@ -1,0 +1,52 @@
+{
+  "name": "focal-plane",
+  "version": "1.0.0",
+  "description": "2.5D motion UI in the browser: flat vector interfaces on a plane in 3D, filmed through a real lens with shallow depth of field, rendered frame by frame to 4K60.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "author": "Nickolai Yegorov (https://github.com/e-Nicko)",
+  "homepage": "https://e-nicko.github.io/focal-plane/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/e-Nicko/focal-plane.git"
+  },
+  "bugs": {
+    "url": "https://github.com/e-Nicko/focal-plane/issues"
+  },
+  "keywords": [
+    "motion-design",
+    "2.5d",
+    "ui-animation",
+    "depth-of-field",
+    "three.js",
+    "webcodecs",
+    "product-film",
+    "agent-skill",
+    "bun",
+    "typescript"
+  ],
+  "scripts": {
+    "serve": "bun tools/server.ts",
+    "shoot": "bun tools/shoot.ts",
+    "render": "bun tools/render.ts",
+    "verify": "bun tools/verify.ts",
+    "timings": "bun tools/timings.ts",
+    "media": "bun tools/media.ts",
+    "build": "bun tools/build.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "mp4-muxer": "5.2.2",
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.0",
+    "@types/three": "0.180.0",
+    "gifenc": "^1.0.3",
+    "typescript": "^7.0.2"
+  },
+  "engines": {
+    "bun": ">=1.2"
+  }
+}

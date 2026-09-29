@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Focal Plane</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="2.5D motion UI in the browser: flat vector interfaces filmed through a real lens, rendered to 4K60.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Focal Plane">
+<meta property="og:description" content="2.5D motion UI in the browser. Flat interfaces, a real lens, hard cuts, rendered frame by frame to 4K60.">
+<meta property="og:url" content="https://e-nicko.github.io/focal-plane/">
+<meta property="og:image" content="https://e-nicko.github.io/focal-plane/media/social.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:,">
+<style>
+  /* The fonts ship with the repository, complete, one file per face:
+     a frame must not depend on a font CDN, its subsets or its updates. */
+  @font-face { font-family: "IBM Plex Sans"; font-weight: 400; src: url(fonts/IBMPlexSans-Regular.woff2) format("woff2"); }
+  @font-face { font-family: "IBM Plex Sans"; font-weight: 500; src: url(fonts/IBMPlexSans-Medium.woff2) format("woff2"); }
+  @font-face { font-family: "IBM Plex Sans"; font-weight: 600; src: url(fonts/IBMPlexSans-SemiBold.woff2) format("woff2"); }
+  @font-face { font-family: "IBM Plex Mono"; font-weight: 400; src: url(fonts/IBMPlexMono-Regular.woff2) format("woff2"); }
+  @font-face { font-family: "IBM Plex Mono"; font-weight: 500; src: url(fonts/IBMPlexMono-Medium.woff2) format("woff2"); }
+
+  /* One visual world: a dark film stage, strictly grey. */
+  :root {
+    color-scheme: dark;
+    --stage: #0c0c0c;
+    --ink: #ececec;
+    --ink-2: #a0a0a0;
+    --ink-3: #6a6a6a;
+    --glass: rgba(16, 16, 16, 0.74);
+    --line: rgba(255, 255, 255, 0.09);
+    --line-2: rgba(255, 255, 255, 0.18);
+    --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", "Cascadia Mono", Consolas, ui-monospace, monospace;
+  }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--stage); color: var(--ink); font: 400 13px/1.4 var(--sans); overflow: hidden; }
+  #stage { position: fixed; inset: 0; display: grid; place-items: center; background: var(--stage); }
+  #film { display: block; background: var(--stage); }
+  #fatal { position: fixed; inset: auto 16px 50% 16px; text-align: center; color: var(--ink-2); font: 500 14px var(--sans); }
+
+  #hud { position: fixed; inset: 0; pointer-events: none; transition: opacity .5s ease; }
+  #hud.is-idle, #hud.is-hidden { opacity: 0; }
+  #hud.is-idle * { cursor: none; }
+  .title { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 20px); left: 24px; display: grid; gap: 2px; }
+  .title b { font: 600 13px var(--sans); letter-spacing: .02em; }
+  .title span { font: 400 11px var(--mono); color: var(--ink-3); }
+
+  .transport {
+    position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%);
+    width: min(780px, calc(100% - 32px)); box-sizing: border-box;
+    display: flex; align-items: center; gap: 14px; padding: 10px 14px;
+    background: var(--glass); border: 1px solid var(--line); border-radius: 14px;
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    pointer-events: auto;
+  }
+  .transport button, .transport select {
+    font: 500 12px var(--sans); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 9px;
+    height: 32px; padding: 0 12px; cursor: pointer;
+  }
+  .transport button:hover, .transport select:hover { border-color: var(--line-2); background: rgba(255, 255, 255, .04); }
+  .transport :focus-visible, #render-panel :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  #play { width: 32px; padding: 0; display: grid; place-items: center; }
+  #play svg { width: 14px; height: 14px; fill: var(--ink); }
+  #play[data-state="playing"] .i-play, #play[data-state="paused"] .i-pause { display: none; }
+  #scrub { flex: 1; min-width: 60px; accent-color: var(--ink); height: 32px; background: transparent; }
+  #timecode { font: 400 12px var(--mono); color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  select option { background: #111; }
+  .render-group { display: flex; gap: 6px; }
+
+  #render-panel {
+    position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 78px); transform: translateX(-50%);
+    width: min(520px, calc(100% - 32px)); box-sizing: border-box; padding: 14px 16px; display: grid; gap: 10px;
+    background: var(--glass); border: 1px solid var(--line); border-radius: 14px; pointer-events: auto;
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  }
+  #render-panel .row { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+  #render-label { font: 400 12px var(--mono); color: var(--ink-2); }
+  .track { height: 3px; background: rgba(255, 255, 255, .08); border-radius: 2px; overflow: hidden; }
+  #render-bar { height: 100%; width: 0; background: var(--ink); }
+  #render-link { color: var(--ink); font: 500 12px var(--sans); }
+  #render-cancel { font: 500 12px var(--sans); color: var(--ink-2); background: none; border: 1px solid var(--line); border-radius: 8px; height: 28px; padding: 0 10px; cursor: pointer; }
+
+  @media (max-width: 620px) {
+    .transport { gap: 8px; padding: 8px 10px; }
+    #timecode, .render-group { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="film" aria-label="A dark monochrome analytics dashboard filmed in 2.5D: a cursor clicks, drags and switches its controls"></canvas></div>
+<p id="fatal" hidden></p>
+
+<div id="hud">
+  <div class="title">
+    <b>Focal Plane</b>
+    <span id="subtitle">2.5D motion UI</span>
+  </div>
+  <div id="render-panel" hidden>
+    <div class="row"><span id="render-label">Preparing…</span><button id="render-cancel" type="button">Cancel</button></div>
+    <div class="track"><div id="render-bar"></div></div>
+    <a id="render-link" hidden>Save MP4</a>
+  </div>
+  <div class="transport">
+    <button id="play" type="button" aria-label="Pause" data-state="playing">
+      <svg class="i-pause" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="1.5" width="3.4" height="11" rx="1"/><rect x="8.6" y="1.5" width="3.4" height="11" rx="1"/></svg>
+      <svg class="i-play" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.8v10.4c0 .6.7 1 1.2.7l8.2-5.2c.5-.3.5-1.1 0-1.4L4.2 1.1C3.7.8 3 1.2 3 1.8z"/></svg>
+    </button>
+    <input id="scrub" type="range" min="0" max="16" step="0.01" value="0" aria-label="Film position">
+    <span id="timecode">00:00.00</span>
+    <select id="quality" aria-label="Render quality">
+      <option value="draft">Draft</option>
+      <option value="high">High</option>
+      <option value="master">Master</option>
+    </select>
+    <span class="render-group">
+      <select id="render-res" aria-label="Master resolution">
+        <option value="3840x2160">4K</option>
+        <option value="2560x1440">1440p</option>
+        <option value="1920x1080">1080p</option>
+      </select>
+      <button id="render" type="button">Render MP4</button>
+    </span>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/three.module.min.js",
+    "mp4-muxer": "./vendor/mp4-muxer/mp4-muxer.mjs"
+  }
+}
+</script>
+<script type="module">
+  // ?film=<name> plays src/<name>/main.js; without it, the example film plays.
+  const name = new URLSearchParams(location.search).get('film') || 'film';
+  const fail = (msg) => { const el = document.getElementById('fatal'); el.hidden = false; el.textContent = msg; };
+  if (!/^[a-z0-9-]+$/.test(name)) fail(`A film name is lowercase letters, digits and hyphens: "${name}".`);
+  else import(`./src/${name}/main.js`).catch((e) => fail(`Cannot load src/${name}/main.js. ${e.message}`));
+</script>
+</body>
+</html>
